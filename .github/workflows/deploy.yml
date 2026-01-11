@@ -11,14 +11,14 @@ jobs:
   test:
     environment: testing
     runs-on: ubuntu-latest
-    container:
-      image: node:16
-    # As both job and service both running in container in this instance. 
+    #container:
+    #  image: node:16
+    # If running this job on runner we must connect via 
     #  The relationship between the test job and the services block is established through Docker networking and Environment Variables.
     env:
       MONGODB_CONNECTION_PROTOCOL: mongodb
-      # We reference the docker label "mongodb" which comes the hostname of our mongodb cluster 
-      MONGODB_CLUSTER_ADDRESS: mongodb
+      # We reference the docker localhost IP and port of MongoDB 27107 
+      MONGODB_CLUSTER_ADDRESS: 127.0.0.1:27017
       MONGODB_USERNAME: root
       MONGODB_PASSWORD: example
       PORT: 8080
@@ -26,6 +26,8 @@ jobs:
     services:
       mongodb: # Docker label of this service 
         image: mongo
+        ports:
+          - 27017:27017
         env:
           MONGO_INITDB_ROOT_USERNAME: root
           MONGO_INITDB_ROOT_PASSWORD: example
